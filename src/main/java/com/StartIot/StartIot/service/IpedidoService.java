@@ -6,11 +6,11 @@ public interface IpedidoService {
 
 
     List<Pedido> obtenerTodopedidos();
-    void guardarPedido(Pedido pedido);
+    void guardarPedido(Pedido pedido); //Guardar o crear es =
     void eliminarPedido(Long id);
-    void editarPedido(Long id, Pedido pedidoActualizado);
+    Pedido editarPedido(Long id, Pedido pedidoActualizado);
     Pedido encontrarPedidoPorId (Long id);
-    void crearPedido(Pedido pedido);
+
 
 
 
