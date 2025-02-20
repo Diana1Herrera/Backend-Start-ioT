@@ -1,11 +1,10 @@
 package com.StartIot.StartIot.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import org.springframework.boot.autoconfigure.security.saml2.Saml2RelyingPartyProperties;
+
+import java.util.List;
 
 @Entity
 public class Producto {
@@ -20,7 +19,17 @@ public class Producto {
     private String especificacines;
     private String Compatible;
 
-    public Producto(Long id_producto, String nombre, String descripcion, String categoria, Double precio, String img, String especificacines, String compatible) {
+    @ManyToMany(mappedBy = "productos")
+            private List<Pedido> pedidos;
+
+    @OneToMany(mappedBy = "ProductoActivo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Activo> activos;
+
+
+    public Producto() {
+    }
+
+    public Producto(Long id_producto, String nombre, String descripcion, String categoria, Double precio, String img, String especificacines, String compatible, List<Pedido> pedidos, List<Activo> activos) {
         this.id_producto = id_producto;
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -29,6 +38,15 @@ public class Producto {
         this.img = img;
         this.especificacines = especificacines;
         Compatible = compatible;
+        this.pedidos = pedidos;
+        this.activos = activos;
+
+        if (activos != null){
+            for (Activo activo : activos){
+                activo.setActivoProducto(this);
+            }
+        }
+
     }
 
     public Long getId_producto() {
@@ -93,5 +111,21 @@ public class Producto {
 
     public void setCompatible(String compatible) {
         Compatible = compatible;
+    }
+
+    public List<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(List<Pedido> pedidos) {
+        this.pedidos = pedidos;
+    }
+
+    public List<Activo> getActivos() {
+        return activos;
+    }
+
+    public void setActivos(List<Activo> activos) {
+        this.activos = activos;
     }
 }

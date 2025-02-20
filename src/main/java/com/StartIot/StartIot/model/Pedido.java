@@ -3,6 +3,8 @@ package com.StartIot.StartIot.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 public class Pedido {
 
@@ -14,17 +16,32 @@ public class Pedido {
 
     @ManyToOne
     @JoinColumn(name = "usuario_id")
-    private Usuario pedidoUsuario;
+    private Usuario usuarioPedido;
 
-    //Generar el constructor again
+    @ManyToMany
+    @JoinTable
+            (name = "productosPedido",
+                    joinColumns = @JoinColumn(name = "pedido_id"),inverseJoinColumns = @JoinColumn(name = "producto_id")
+            )private List<Producto> productos;
 
-    public Pedido(Long id_pedido, Double total, int cantidad) {
+
+    public Pedido(Long id_pedido, Double total, int cantidad, Usuario usuarioPedido, List<Producto> productos) {
         this.id_pedido = id_pedido;
         this.total = total;
         this.cantidad = cantidad;
+        this.usuarioPedido = usuarioPedido;
+        this.productos = productos;
     }
 
     public Pedido() {
+    }
+
+    public List<Producto> getProductos() {
+        return productos;
+    }
+
+    public void setProductos(List<Producto> productos) {
+        this.productos = productos;
     }
 
     public Long getId_pedido() {
@@ -49,5 +66,13 @@ public class Pedido {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public Usuario getUsuarioPedido() {
+        return usuarioPedido;
+    }
+
+    public void setUsuarioPedido(Usuario usuarioPedido) {
+        this.usuarioPedido = usuarioPedido;
     }
 }
