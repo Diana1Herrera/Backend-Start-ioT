@@ -1,10 +1,7 @@
 package com.StartIot.StartIot.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Pedido {
@@ -15,6 +12,11 @@ public class Pedido {
     private Double total;
     private int cantidad;
 
+    @ManyToOne
+    @JoinColumn(name = "usuario_id")
+    private Usuario pedidoUsuario;
+
+    //Generar el constructor again
 
     public Pedido(Long id_pedido, Double total, int cantidad) {
         this.id_pedido = id_pedido;

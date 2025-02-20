@@ -5,9 +5,12 @@ import com.StartIot.StartIot.model.Producto;
 import com.StartIot.StartIot.repository.IpedidoRepository;
 import com.StartIot.StartIot.repository.IproductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+
+@Service
 public class ProductoService implements IproductoService {
     @Autowired
     private IproductoRepository productoRepository;
