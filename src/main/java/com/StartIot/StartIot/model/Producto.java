@@ -22,7 +22,7 @@ public class Producto {
     @ManyToMany(mappedBy = "productos")
             private List<Pedido> pedidos;
 
-    @OneToMany(mappedBy = "ProductoActivo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "activoProducto", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Activo> activos;
 
 

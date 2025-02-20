@@ -23,7 +23,7 @@ public class Usuario {
     @OneToMany(mappedBy = "usuarioPedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pedido> pedidos;
 
-    @OneToMany(mappedBy = "usuarioActivo", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "activoUsuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Activo> activos;
 
     public Usuario() {
