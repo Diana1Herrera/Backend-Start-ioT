@@ -18,13 +18,12 @@ public class Pedido {
 
     //Generar el constructor again
 
-    public Pedido(Long id_pedido, Double total, int cantidad) {
+
+    public Pedido(Long id_pedido, Double total, int cantidad, Usuario pedidoUsuario) {
         this.id_pedido = id_pedido;
         this.total = total;
         this.cantidad = cantidad;
-    }
-
-    public Pedido() {
+        this.pedidoUsuario = pedidoUsuario;
     }
 
     public Long getId_pedido() {
@@ -49,5 +48,13 @@ public class Pedido {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
+    }
+
+    public Usuario getPedidoUsuario() {
+        return pedidoUsuario;
+    }
+
+    public void setPedidoUsuario(Usuario pedidoUsuario) {
+        this.pedidoUsuario = pedidoUsuario;
     }
 }
