@@ -18,6 +18,8 @@ public class Usuario {
     private String direccion;
 
     @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false)
+
     private Date fechaRegistro;
 
     @OneToMany(mappedBy = "usuarioPedido", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -54,7 +56,10 @@ public class Usuario {
         }
     }
 
-
+    @PrePersist
+    protected void onCreate() {
+        fechaRegistro = new Date(); // Asigna la fecha actual antes de guardar en la BD
+    }
 
     public Long getId_Usuario() {
         return id_Usuario;

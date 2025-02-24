@@ -3,19 +3,20 @@ package com.StartIot.StartIot.controller;
 import com.StartIot.StartIot.model.Activo;
 import com.StartIot.StartIot.service.IActivoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/activos")
+@RequestMapping("/activos")
 public class ActivoController {
 
     @Autowired
     private IActivoService activoService;
 
-    @GetMapping
+    @GetMapping("/traer")
     public ResponseEntity<List<Activo>> obtenerTodosLosActivos() {
         List<Activo> activos = activoService.obtenerTodoactivos();
         return ResponseEntity.ok(activos);
@@ -31,25 +32,28 @@ public class ActivoController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<String> guardarActivo(@RequestBody Activo activo) {
+    @PostMapping("/crear")
+    public String crearActivo(@RequestBody Activo activo){
         activoService.guardarActivo(activo);
-        return ResponseEntity.ok("Activo guardado exitosamente");
+        return "El pedido fue creado con exito";
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Activo> editarActivo(@PathVariable Long id, @RequestBody Activo actualizado) {
-        Activo actualizadoActivo = activoService.editarActivo(id, actualizado);
-        if (actualizadoActivo != null) {
-            return ResponseEntity.ok(actualizadoActivo);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> eliminarActivo(@PathVariable Long id) {
+    @DeleteMapping("/eliminar/{id}")
+    public String eliminarActivo(@PathVariable Long id){
+
         activoService.eliminarActivo(id);
-        return ResponseEntity.ok("Activo eliminado correctamente");
+        return "El activo se eliminó con exito";
+    }
+    @PutMapping("/editar/{id}")
+    public ResponseEntity<?> editarActivo(@PathVariable Long id, @RequestBody Activo Actualizado) {
+        try {
+            Activo activoEditado = activoService.editarActivo(id, Actualizado);
+            return ResponseEntity.ok(activoEditado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al actualizar el activo.");
+        }
     }
 }
