@@ -8,11 +8,14 @@ import com.StartIot.StartIot.service.UsuariosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -39,19 +42,32 @@ public class UsuarioController {
     // Crear un nuevo usuario
     @PostMapping("/crear")
     public ResponseEntity<String> crearUsuario(@RequestBody Usuario usuario) {
-        usuariosServicejwt.guardarUsuario(usuario);
+        usuariosServicejwt.crearUsuario(usuario);
         return ResponseEntity.ok("El usuario fue creado con éxito.");
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Usuario usuario) {
-        UserDetails userDetails = usuariosServicejwt.loadUserByUsername(usuario.getCorreo());
-        if (userDetails != null && passwordEncoder.matches(usuario.getContrasena(), userDetails.getPassword())) {
-            String token = jwtUtil.generateToken(userDetails.getUsername());
-            return ResponseEntity.ok(token);
+    public ResponseEntity<?> login(@RequestBody Usuario usuario) {
+        try {
+            UserDetails userDetails = usuariosServicejwt.loadUserByUsername(usuario.getCorreo());
+
+            if (userDetails == null) {
+                return ResponseEntity.status(404).body("Usuario no encontrado");
+            }
+
+            if (passwordEncoder.matches(usuario.getContrasena(), userDetails.getPassword())) {
+                String token = jwtUtil.generateToken(userDetails.getUsername());
+                Map<String, String> response = new HashMap<>();
+                response.put("token", token);
+                return ResponseEntity.ok(response);
+            } else {
+                return ResponseEntity.status(401).body("Contraseña incorrecta");
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error interno del servidor: " + e.getMessage());
         }
-        return ResponseEntity.status(401).body("Credenciales inválidas");
     }
+
 
     // Eliminar un usuario por ID
     @DeleteMapping("/eliminar/{id}")
@@ -84,5 +100,10 @@ public class UsuarioController {
         }
     }
 
+    @GetMapping("/buscar")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> getProtectedResource() {
+        return ResponseEntity.ok("Este es un recurso protegido!");
+    }
 
 }

@@ -35,7 +35,7 @@ public class SecurityConfig {
         http //reglas de autorizacion
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/login", "/auth/register").permitAll()//cualquier persona puede entrar a esa ruta
+                        .requestMatchers("/usuarios/login","/usuarios/crear","/usuarios/traer").permitAll()//cualquier persona puede entrar a esa ruta
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

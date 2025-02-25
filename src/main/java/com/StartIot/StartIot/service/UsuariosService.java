@@ -81,13 +81,18 @@ public class UsuariosService implements IusuariosService{
     public Usuario crearUsuario(Usuario usuario) {
        Usuario usuarioRegistrado = new Usuario();
        usuarioRegistrado.setCorreo(usuario.getCorreo());
+       usuarioRegistrado.setNombre(usuario.getNombre());
+       usuarioRegistrado.setTelefono(usuario.getTelefono());
+       usuarioRegistrado.setApellido(usuario.getApellido());
+       usuarioRegistrado.setDireccion(usuario.getDireccion());
        usuarioRegistrado.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
        //encripto la ccontraseña y la devuelve
+
         return usuarioRepository.save(usuarioRegistrado);
     }
 
     public UserDetails loadUserByUsername (String correo) throws UsernameNotFoundException{
-        Usuario usuario = usuarioRepository.existsByCorreoJwt(correo);
+        Usuario usuario = usuarioRepository.findByCorreo(correo);
         if (usuario == null){
             throw new UsernameNotFoundException("Usuario no encontrado");
         }
