@@ -3,12 +3,20 @@ package com.StartIot.StartIot.service;
 import com.StartIot.StartIot.model.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.StartIot.StartIot.repository.IusuarioRepository;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class UsuariosService implements IusuariosService{
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
 
     @Autowired
     private IusuarioRepository usuarioRepository;
@@ -69,12 +77,22 @@ public class UsuariosService implements IusuariosService{
 
 
 
-    @Override
-    public void crearUsuario(Usuario usuario) {
-        if (usuarioRepository.existsByCorreo(usuario.getCorreo())) {
-            throw new IllegalArgumentException("El correo ya está registrado.");
-        }
-        usuarioRepository.save(usuario);
+
+    public Usuario crearUsuario(Usuario usuario) {
+       Usuario usuarioRegistrado = new Usuario();
+       usuarioRegistrado.setCorreo(usuario.getCorreo());
+       usuarioRegistrado.setContrasena(passwordEncoder.encode(usuario.getContrasena()));
+       //encripto la ccontraseña y la devuelve
+        return usuarioRepository.save(usuarioRegistrado);
     }
+
+    public UserDetails loadUserByUsername (String correo) throws UsernameNotFoundException{
+        Usuario usuario = usuarioRepository.existsByCorreoJwt(correo);
+        if (usuario == null){
+            throw new UsernameNotFoundException("Usuario no encontrado");
+        }
+        return new  org.springframework.security.core.userdetails.User(usuario.getCorreo(), usuario.getContrasena(), new ArrayList<>());
+    }
+
 
 }

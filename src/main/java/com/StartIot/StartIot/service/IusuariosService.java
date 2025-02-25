@@ -10,7 +10,6 @@ public interface IusuariosService {
     void eliminarUsuario(Long id);
     Usuario editarUsuario(Long id, Usuario usuarioActualizado);
     Usuario encontrarUsuarioPorId(Long id);
-    void crearUsuario(Usuario usuario);
 
 
 

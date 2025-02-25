@@ -1,11 +1,15 @@
 package com.StartIot.StartIot.controller;
 
 
+import com.StartIot.StartIot.JwtUtil;
 import com.StartIot.StartIot.model.Usuario;
 import com.StartIot.StartIot.service.IusuariosService;
+import com.StartIot.StartIot.service.UsuariosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,6 +21,15 @@ public class UsuarioController {
     @Autowired
     private IusuariosService usuariosService;
 
+    @Autowired
+    private UsuariosService usuariosServicejwt;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     // Obtener todos los usuarios
     @GetMapping("/traer")
     public List<Usuario> obtenerTodosLosUsuarios() {
@@ -25,9 +38,19 @@ public class UsuarioController {
 
     // Crear un nuevo usuario
     @PostMapping("/crear")
-    public String crearUsuario(@RequestBody Usuario usuario) {
-        usuariosService.guardarUsuario(usuario);
-        return "El usuario fue creado con éxito.";
+    public ResponseEntity<String> crearUsuario(@RequestBody Usuario usuario) {
+        usuariosServicejwt.guardarUsuario(usuario);
+        return ResponseEntity.ok("El usuario fue creado con éxito.");
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestBody Usuario usuario) {
+        UserDetails userDetails = usuariosServicejwt.loadUserByUsername(usuario.getCorreo());
+        if (userDetails != null && passwordEncoder.matches(usuario.getContrasena(), userDetails.getPassword())) {
+            String token = jwtUtil.generateToken(userDetails.getUsername());
+            return ResponseEntity.ok(token);
+        }
+        return ResponseEntity.status(401).body("Credenciales inválidas");
     }
 
     // Eliminar un usuario por ID

@@ -1,5 +1,6 @@
 package com.StartIot.StartIot;
 
+import com.StartIot.StartIot.service.UsuariosService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Lazy;
@@ -27,7 +28,7 @@ public class SecurityConfig {
 
     @Autowired
     @Lazy
-    private UserService userService;
+    private UsuariosService userService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
